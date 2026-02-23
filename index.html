@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Margot — a multi-agent AI desktop assistant with 140+ tools, four-layer memory, and a coordinator that actually works. Built by Patrick Kidwell.">
+    <title>Margot | AI Desktop Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">&#9670;</span>
+                <span class="logo-text">Mountain Meadow Systems</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#capabilities">Capabilities</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#memory">Memory</a></li>
+            </ul>
+            <a href="#" class="btn btn-nav">GitHub</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <div class="hero-inner">
+                <h1>Margot <span class="version">v2.1</span></h1>
+                <p class="tagline">A multi-agent AI desktop assistant with 140+ tools and a memory that persists.</p>
+                <p class="hero-desc">I built Margot to be the AI assistant I actually wanted&mdash;one that coordinates specialized agents across Google Cloud, research, browser automation, and code, with a four-layer memory system so it remembers what matters between conversations.</p>
+                <a href="#" class="btn btn-primary">View on GitHub</a>
+                <p class="byline">Built by Patrick Kidwell</p>
+            </div>
+        </div>
+    </header>
+
+    <section id="video" class="video-section">
+        <div class="container">
+            <div class="video-container">
+                <video controls preload="metadata" playsinline>
+                    <source src="Margot-Promo.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <section id="capabilities" class="capabilities">
+        <div class="container">
+            <h2>What it does</h2>
+            <div class="bento-grid">
+                <div class="bento-cell wide">
+                    <h3>Google Cloud</h3>
+                    <p>68 tools across Analytics 4, Search Console, Merchant Center, Gmail, Drive, Sheets, and Calendar. Multi-account OAuth with automatic routing.</p>
+                </div>
+                <div class="bento-cell">
+                    <h3>Research</h3>
+                    <p>Three tiers: standard chat (5&ndash;15s), light research with subtopic pipelines (30&ndash;90s), and deep research with 4 independent agents and cross-pollination (90&ndash;180s).</p>
+                </div>
+                <div class="bento-cell">
+                    <h3>Desktop &amp; Browser</h3>
+                    <p>21 desktop tools with three-level shell safety. Browser automation via Playwright with 65 discovered skills and deterministic recovery.</p>
+                </div>
+                <div class="bento-cell">
+                    <h3>Media Generation</h3>
+                    <p>Image generation via Gemini 3 Pro (up to 4K), video via Veo 3.1 and Sora 2, voice synthesis via ElevenLabs with streaming.</p>
+                </div>
+                <div class="bento-cell">
+                    <h3>Coding Agent</h3>
+                    <p>Freya runs on MiniMax-M2 with a RAG-enhanced best practices corpus. Auto-linting, auto-commit, 17&times; cheaper than comparable models.</p>
+                </div>
+                <div class="bento-cell full">
+                    <h3>Skills &amp; Monitoring</h3>
+                    <p>Self-extending tool generation from natural language descriptions (20-skill cap, adjustable in source). Heartbeat-based watch system with cron scheduling, 5 evaluator types, and iOS push notifications.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" class="architecture">
+        <div class="container">
+            <h2>How it works</h2>
+            <p class="section-desc">A Grok 4.1 Fast coordinator with a 2M token context window runs a ReAct loop (up to 30 iterations) and delegates to specialized subagents. Each agent has its own model, tools, and system prompt.</p>
+
+            <div class="agent-rows">
+                <div class="agent-row">
+                    <span class="agent-name">Research</span>
+                    <span class="agent-detail">4&times; Grok 4.1 Fast, cross-pollination between rounds, 90&ndash;180s</span>
+                </div>
+                <div class="agent-row">
+                    <span class="agent-name">Freya</span>
+                    <span class="agent-detail">MiniMax-M2 (230B MoE), RAG corpus, auto-lint, ~$0.003/task</span>
+                </div>
+                <div class="agent-row">
+                    <span class="agent-name">Browser</span>
+                    <span class="agent-detail">Gemini 3 Flash loops, 65 skills, deterministic recovery</span>
+                </div>
+            </div>
+
+            <div class="tech-strip">
+                <span>Tauri 2.0</span>
+                <span>React</span>
+                <span>FastAPI</span>
+                <span>PostgreSQL + pgvector</span>
+                <span>Tailscale</span>
+                <span>SwiftUI</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="memory" class="memory">
+        <div class="container">
+            <h2>Memory</h2>
+            <p class="section-desc">Four-layer cognitive memory inspired by Mem0. Memories are extracted after each conversation and assembled in under 150ms.</p>
+            <div class="memory-layers">
+                <div class="memory-layer">
+                    <span class="layer-number">01</span>
+                    <div class="layer-info">
+                        <h4>Short-Term</h4>
+                        <p>Last 20 messages from the current conversation, kept in PostgreSQL.</p>
+                    </div>
+                </div>
+                <div class="memory-layer">
+                    <span class="layer-number">02</span>
+                    <div class="layer-info">
+                        <h4>Semantic</h4>
+                        <p>Long-term facts and preferences stored as vectors with HNSW indexing and automatic deduplication.</p>
+                    </div>
+                </div>
+                <div class="memory-layer">
+                    <span class="layer-number">03</span>
+                    <div class="layer-info">
+                        <h4>Episodic</h4>
+                        <p>Past conversation summaries with importance scoring&mdash;top 3 retrieved per query.</p>
+                    </div>
+                </div>
+                <div class="memory-layer">
+                    <span class="layer-number">04</span>
+                    <div class="layer-info">
+                        <h4>Procedural</h4>
+                        <p>Reusable workflow patterns detected from tool usage sequences with success tracking.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="get-margot" class="get-access">
+        <div class="container">
+            <div class="cta-inner">
+                <h2>Get Margot</h2>
+                <p class="cta-desc">Free and open-source. Bring your own API keys.</p>
+                <p class="cost-note">~$0.001/query standard &middot; ~$0.01 light research &middot; ~$0.016 deep research</p>
+                <a href="#" class="btn btn-primary btn-gh">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    View on GitHub
+                </a>
+                <p class="sys-req">macOS 13+ &middot; iOS 17+ companion</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-row">
+                <div class="footer-brand">
+                    <span class="logo-icon">&#9670;</span>
+                    <span>Mountain Meadow Systems</span>
+                </div>
+                <p>&copy; 2026 Mountain Meadow Systems</p>
+                <a href="#" class="footer-link">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
