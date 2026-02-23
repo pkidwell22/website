@@ -524,17 +524,21 @@ img, video {
 /* ---- Demo Page ---- */
 
 .demo-page {
-  padding: calc(64px + 4rem) 0 4rem;
-  min-height: calc(100vh - 64px - 120px);
+  padding: calc(64px + 5rem) 0 5rem;
+  min-height: 100vh;
   display: flex;
   align-items: flex-start;
+  justify-content: center;
+}
+
+.demo-page .container {
+  display: flex;
   justify-content: center;
 }
 
 .form-card {
   max-width: 480px;
   width: 100%;
-  margin: 0 auto;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 2.5rem;
@@ -547,6 +551,7 @@ img, video {
   font-weight: 600;
   letter-spacing: -0.03em;
   margin-bottom: 0.5rem;
+  color: var(--color-text);
 }
 
 .form-subtitle {
@@ -568,19 +573,23 @@ img, video {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--color-text-muted);
-  margin-bottom: 0.375rem;
+  margin-bottom: 0.5rem;
 }
 
 .form-input,
 .form-textarea {
+  display: block;
   width: 100%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   font-family: var(--font-body);
   font-size: 0.9375rem;
   color: var(--color-text);
   background-color: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 0.625rem 0.875rem;
+  padding: 0.75rem 0.875rem;
   outline: none;
   transition: border-color 150ms ease;
 }
@@ -588,6 +597,7 @@ img, video {
 .form-input::placeholder,
 .form-textarea::placeholder {
   color: var(--color-text-muted);
+  opacity: 1;
 }
 
 .form-input:focus,
@@ -597,12 +607,14 @@ img, video {
 
 .form-textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 120px;
+  line-height: 1.6;
 }
 
 .form-submit {
   width: 100%;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.875rem 1.75rem;
 }
 
 /* ---- Footer ---- */
