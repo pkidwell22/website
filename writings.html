@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Request a demo of Margot, a multi-agent AI desktop assistant by Mountain Meadow Systems.">
-    <title>Request a Demo | Margot</title>
+    <meta name="description" content="Writings — Mountain Meadow Systems. Posts about building Margot, multi-agent AI, and lessons learned.">
+    <title>Writings | Margot</title>
     <link rel="stylesheet" href="styles.css?v=4">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,39 +17,35 @@
             <a href="/" class="logo">
                 <span class="logo-text">Mountain Meadow Systems</span>
             </a>
-            <div style="display:flex;gap:1.5rem;align-items:center;">
-                <a href="/documentation" class="nav-link-standalone">Documentation</a>
-                <a href="/writings" class="nav-link-standalone">Writings</a>
-            </div>
-            <a href="/" class="btn btn-nav">Back</a>
+            <ul class="nav-links">
+                <li><a href="/#capabilities">Capabilities</a></li>
+                <li><a href="/#architecture">Architecture</a></li>
+                <li><a href="/#memory">Memory</a></li>
+                <li><a href="/documentation">Documentation</a></li>
+                <li><a href="/writings" class="active">Writings</a></li>
+            </ul>
+            <a href="https://github.com/pkidwell22" target="_blank" rel="noopener" class="btn btn-nav">GitHub</a>
         </div>
     </nav>
 
-    <main class="demo-page">
+    <main class="blog-page">
         <div class="container">
-            <div class="form-card">
-                <h1>Request a Demo</h1>
-                <p class="form-subtitle">See what Margot can do for your workflow. Fill out the form and we'll be in touch.</p>
-                <form action="https://formspree.io/f/xkovpopp" method="POST">
-                    <div class="form-group">
-                        <label class="form-label" for="name">Name</label>
-                        <input class="form-input" type="text" id="name" name="name" required placeholder="Your name">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="email">Email</label>
-                        <input class="form-input" type="email" id="email" name="email" required placeholder="you@company.com">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="company">Company</label>
-                        <input class="form-input" type="text" id="company" name="company" placeholder="Company name (optional)">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="message">Message</label>
-                        <textarea class="form-textarea" id="message" name="message" rows="4" placeholder="Tell me about your use case..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary form-submit">Send Request</button>
-                </form>
+
+            <header class="blog-header">
+                <h1>Writings</h1>
+                <p>Notes on building Margot, multi-agent AI, and lessons learned along the way.</p>
+            </header>
+
+            <div class="blog-grid">
+
+                <a href="/writings/building-margot" class="blog-card">
+                    <span class="blog-card-date">February 23, 2026</span>
+                    <h2 class="blog-card-title">Building Margot: From Side Project to 140+ Tools</h2>
+                    <p class="blog-card-excerpt">How a weekend experiment with the OpenAI API turned into a multi-agent desktop assistant with four-layer memory, browser automation, and an iOS companion app.</p>
+                </a>
+
             </div>
+
         </div>
     </main>
 
