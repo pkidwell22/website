@@ -184,15 +184,14 @@ img, video {
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   background-color: var(--color-bg-subtle);
-  color: var(--color-text-secondary);
+  color: var(--color-text);
   font-family: var(--font-heading);
   font-size: 0.8125rem;
   font-weight: 600;
-  transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+  transition: border-color 150ms ease, background-color 150ms ease;
 }
 
 .hero-icon:hover {
-  color: var(--color-text);
   border-color: var(--color-text-muted);
   background-color: var(--color-border);
 }
@@ -215,7 +214,7 @@ img, video {
 .hero .version {
   font-weight: 500;
   font-size: 1.125rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
   vertical-align: super;
   letter-spacing: -0.01em;
 }
@@ -230,7 +229,7 @@ img, video {
 
 .hero-desc {
   font-size: 0.9375rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
   line-height: 1.7;
   margin-bottom: 2.25rem;
 }
