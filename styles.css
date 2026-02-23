@@ -210,6 +210,24 @@ img, video {
   font-weight: 500;
 }
 
+.hero-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+}
+
+.hero-links a {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: color 150ms ease;
+}
+
+.hero-links a:hover {
+  color: var(--color-text);
+}
+
 /* ---- Video ---- */
 
 .video-section {
