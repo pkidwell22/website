@@ -120,6 +120,11 @@ img, video {
   color: var(--color-text);
 }
 
+.nav-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
 /* ---- Buttons ---- */
 
 .btn {
