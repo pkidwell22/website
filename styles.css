@@ -166,14 +166,7 @@ img, video {
 }
 
 .hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(ellipse at 50% 20%, rgba(224, 122, 95, 0.06), transparent 60%);
-  pointer-events: none;
+  display: none;
 }
 
 .hero-inner {
@@ -815,5 +808,238 @@ img, video {
   .cost-pills {
     flex-direction: column;
     align-items: center;
+  }
+}
+
+/* ---- Paper Page ---- */
+
+.nav-links a.active {
+  color: var(--color-text);
+}
+
+.nav-link-standalone {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: color 150ms ease;
+}
+
+.nav-link-standalone:hover {
+  color: var(--color-text);
+}
+
+.paper-page {
+  padding: calc(64px + 4rem) 0 4rem;
+}
+
+.paper-header {
+  max-width: 780px;
+  margin: 0 auto 3rem;
+  text-align: center;
+}
+
+.paper-header h1 {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.5rem;
+}
+
+.paper-subtitle {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 1.25rem;
+}
+
+.paper-meta {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.paper-author {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.paper-content {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.paper-content h2 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  margin-top: 3.5rem;
+  margin-bottom: 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.paper-content h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.paper-content h3 {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--color-text);
+}
+
+.paper-content h4 {
+  font-family: var(--font-heading);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.paper-content p {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+
+.paper-content strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.paper-content .table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.25rem 0;
+}
+
+.paper-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  background-color: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.paper-content thead {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.paper-content th {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.paper-content td {
+  padding: 0.625rem 1rem;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+  line-height: 1.5;
+}
+
+.paper-content tr:last-child td {
+  border-bottom: none;
+}
+
+.paper-content tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.paper-footer-meta {
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.paper-footer-meta p {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.25rem;
+}
+
+/* Paper page responsive */
+
+@media (max-width: 768px) {
+  .paper-page {
+    padding: calc(64px + 2.5rem) 0 3rem;
+  }
+
+  .paper-header h1 {
+    font-size: 2.25rem;
+  }
+
+  .paper-subtitle {
+    font-size: 1.0625rem;
+  }
+
+  .paper-meta,
+  .paper-author {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .paper-content h2 {
+    font-size: 1.25rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .paper-content h3 {
+    font-size: 1rem;
+  }
+
+  .paper-content table {
+    min-width: 500px;
+  }
+
+  .nav-link-standalone {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .paper-header h1 {
+    font-size: 1.75rem;
+    letter-spacing: 0.08em;
+  }
+
+  .paper-content p {
+    font-size: 0.875rem;
+  }
+
+  .paper-content table {
+    font-size: 0.75rem;
+  }
+
+  .paper-content th,
+  .paper-content td {
+    padding: 0.5rem 0.75rem;
   }
 }
