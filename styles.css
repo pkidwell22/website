@@ -125,6 +125,30 @@ img, video {
   gap: 0.5rem;
 }
 
+.nav-mobile-only {
+  display: none;
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background-color: var(--color-text);
+  border-radius: 1px;
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+
 /* ---- Buttons ---- */
 
 .btn {
@@ -738,8 +762,64 @@ img, video {
 /* ---- Responsive: 768px ---- */
 
 @media (max-width: 768px) {
+  .nav-toggle {
+    display: flex;
+  }
+
   .nav-links {
     display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: rgba(10, 10, 10, 0.98);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.5rem 1.5rem;
+    gap: 0;
+    z-index: 99;
+  }
+
+  .navbar.open .nav-links {
+    display: flex;
+  }
+
+  .nav-links li {
+    list-style: none;
+  }
+
+  .nav-links li a {
+    display: block;
+    padding: 0.875rem 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+  }
+
+  .nav-links li:last-child a {
+    border-bottom: none;
+  }
+
+  .nav-mobile-only {
+    display: list-item;
+  }
+
+  .nav-buttons {
+    display: none;
+  }
+
+  .navbar.open .nav-toggle span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .navbar.open .nav-toggle span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .navbar.open .nav-toggle span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
   }
 
   .hero {
@@ -849,16 +929,6 @@ img, video {
   color: var(--color-text);
 }
 
-.nav-link-standalone {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  transition: color 150ms ease;
-}
-
-.nav-link-standalone:hover {
-  color: var(--color-text);
-}
 
 .paper-page {
   padding: calc(64px + 4rem) 0 4rem;
@@ -1054,9 +1124,7 @@ img, video {
     min-width: 500px;
   }
 
-  .nav-link-standalone {
-    display: none;
-  }
+
 }
 
 @media (max-width: 480px) {

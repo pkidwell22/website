@@ -23,11 +23,14 @@
                 <li><a href="/#memory">Memory</a></li>
                 <li><a href="/documentation">Documentation</a></li>
                 <li><a href="/writings" class="active">Writings</a></li>
+                <li class="nav-mobile-only"><a href="https://github.com/pkidwell22" target="_blank" rel="noopener">GitHub</a></li>
+                <li class="nav-mobile-only"><a href="/contact">Contact</a></li>
             </ul>
             <div class="nav-buttons">
                 <a href="https://github.com/pkidwell22" target="_blank" rel="noopener" class="btn btn-nav">GitHub</a>
                 <a href="/contact" class="btn btn-nav">Contact</a>
             </div>
+            <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
         </div>
     </nav>
 
@@ -73,5 +76,6 @@
         </div>
     </footer>
 
+    <script>document.querySelector('.nav-toggle').addEventListener('click',function(){document.querySelector('.navbar').classList.toggle('open')});</script>
 </body>
 </html>

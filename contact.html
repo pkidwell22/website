@@ -17,11 +17,12 @@
             <a href="/" class="logo">
                 <span class="logo-text">Mountain Meadow Systems</span>
             </a>
-            <div style="display:flex;gap:1.5rem;align-items:center;">
-                <a href="/documentation" class="nav-link-standalone">Documentation</a>
-                <a href="/writings" class="nav-link-standalone">Writings</a>
-            </div>
+            <ul class="nav-links">
+                <li><a href="/documentation">Documentation</a></li>
+                <li><a href="/writings">Writings</a></li>
+            </ul>
             <a href="/" class="btn btn-nav">Back</a>
+            <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
         </div>
     </nav>
 
@@ -75,5 +76,6 @@
         </div>
     </footer>
 
+    <script>document.querySelector('.nav-toggle').addEventListener('click',function(){document.querySelector('.navbar').classList.toggle('open')});</script>
 </body>
 </html>
