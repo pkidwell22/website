@@ -299,14 +299,16 @@ img, video {
 }
 
 .video-container {
+  position: relative;
   max-width: 880px;
   margin: 0 auto;
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: #111;
+  background-color: #000;
   aspect-ratio: 16 / 9;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
 }
 
 .video-container video {
@@ -314,6 +316,113 @@ img, video {
   height: 100%;
   display: block;
   object-fit: cover;
+}
+
+/* Play overlay */
+.vp-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+  transition: opacity 300ms ease;
+}
+
+.vp-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.vp-play-icon {
+  width: 64px;
+  height: 64px;
+  color: #fff;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+  transition: transform 150ms ease;
+}
+
+.vp-overlay:hover .vp-play-icon {
+  transform: scale(1.08);
+}
+
+/* Controls bar */
+.vp-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+
+.video-container:hover .vp-controls,
+.video-container.vp-paused .vp-controls {
+  opacity: 1;
+}
+
+.vp-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 150ms ease;
+  flex-shrink: 0;
+}
+
+.vp-btn:hover {
+  color: #fff;
+}
+
+.vp-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.vp-time {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: -0.01em;
+  min-width: 80px;
+}
+
+/* Progress bar */
+.vp-progress {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: height 150ms ease;
+}
+
+.vp-progress:hover {
+  height: 6px;
+}
+
+.vp-progress-filled {
+  height: 100%;
+  background-color: var(--color-accent);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 100ms linear;
 }
 
 /* ---- Capabilities (Bento Grid) ---- */
@@ -840,6 +949,21 @@ img, video {
 
   .video-section {
     padding: 0 0 3.5rem;
+  }
+
+  .vp-play-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .vp-controls {
+    gap: 0.5rem;
+    padding: 0.375rem 0.625rem;
+  }
+
+  .vp-time {
+    font-size: 0.625rem;
+    min-width: 70px;
   }
 
   .capabilities,
