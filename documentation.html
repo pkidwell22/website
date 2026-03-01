@@ -44,7 +44,7 @@
                 <p class="paper-subtitle">Multi-Agent AI Desktop Assistant</p>
                 <div class="paper-meta">
                     <span>Technical White Paper v2.1</span>
-                    <span>February 2026</span>
+                    <span>March 2026</span>
                 </div>
                 <div class="paper-author">
                     <span>Patrick Kidwell</span>
@@ -318,6 +318,34 @@
                 </div>
                 <p>Alert lifecycle includes acknowledgment and resolution tracking. When a watch triggers an alert, the iOS app receives an APNs push notification containing a seed message. Tapping the notification creates a new conversation where the coordinator proactively investigates the alert, providing immediate context and recommended actions.</p>
 
+                <h2>Scheduled Task Execution</h2>
+                <p>Beyond monitoring, Margot can execute full coordinator workflows on a schedule. The TaskExecutor runs arbitrary multi-tool workflows&mdash;such as monthly PageSpeed audits written to Google Sheets&mdash;using the same ReAct loop and tool set available in interactive chat, with additional safety guarantees designed for unattended operation.</p>
+                <p>Scheduled tasks support the same three schedule modes as watches: slot-based (fixed time slots), interval-based (every N minutes), and cron expression scheduling. Runtime guidance is loaded from editable markdown prompts rather than hardcoded instructions, allowing workflow behavior to be tuned without code changes.</p>
+
+                <h3>Verification Contract</h3>
+                <p>Every scheduled execution is subject to a global verification contract that ensures work was actually performed and results are correct. The executor fails the run if any of the following conditions are detected:</p>
+                <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr><th>Check</th><th>Fails When</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Tool execution</td><td>No successful tool call occurred during the run</td></tr>
+                        <tr><td>Write verification</td><td>Prompt-required file writes are missing</td></tr>
+                        <tr><td>Read-back verification</td><td>Written data was not read back and confirmed</td></tr>
+                        <tr><td>Model self-report</td><td>The model reports <code>VERIFIED: false</code> in its output</td></tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <h3>Mutation Guardrails</h3>
+                <p>Scheduled tasks default to non-destructive behavior. For workflows that preserve, append, or upsert data, the executor monitors for suspicious file truncation&mdash;such as a Sheets write that replaces existing rows with fewer rows than expected. If detected, the run fails unless the prompt explicitly authorizes replacement. This prevents accidental data loss during unattended execution.</p>
+                <p>Coverage checks compare the number of processed items (e.g., analyzed URLs) against rows written and expected totals, catching partial completions that would otherwise appear successful.</p>
+
+                <h3>Skill Context and Fallback</h3>
+                <p>When Skills V2 is enabled, the executor prepares and injects skill context for scheduled runs, including <code>read_skill</code> execution paths during task loops. This gives scheduled workflows the same domain-specific knowledge available in interactive chat.</p>
+                <p>When a scheduled workflow fails verification or times out, the executor can invoke a deterministic backend-only fallback in the same execution pass. For example, a PageSpeed-to-Sheets workflow that fails the LLM-driven path will fall back to a hardcoded sequence: fetch PageSpeed data, save JSON artifact, resolve the target Drive file and sheet, write rows, and read back for verification. On failure, the fallback returns the exact step that failed and the last successful step for diagnostics.</p>
+
                 <h2>Performance and Optimization</h2>
 
                 <h3>Parallel Tool Execution</h3>
@@ -419,7 +447,7 @@
                 <p>Margot represents a practical demonstration that multi-agent AI systems can be built for production use today, with careful attention to reliability, performance, and user experience.</p>
 
                 <div class="paper-footer-meta">
-                    <p>Margot AI System | Version 2.1.0 | February 2026</p>
+                    <p>Margot AI System | Version 2.1.0 | March 2026</p>
                     <p>Mountain Meadow Systems | mountainmeadowsystems.com</p>
                 </div>
 
