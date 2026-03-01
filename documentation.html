@@ -173,6 +173,11 @@
                 </table>
                 </div>
 
+                <p><strong>Gmail (14 tools):</strong> Search with Gmail query syntax, full message and thread reading, send with CC/BCC and HTML formatting, reply with proper threading, label management, and batch delete/archive operations.</p>
+                <p><strong>Drive (10 tools):</strong> File search with query syntax, automatic export of Google Docs to text/CSV/PDF, resumable uploads with MIME auto-detection, and folder management.</p>
+                <p><strong>Sheets (8 tools):</strong> A1 notation reads, multi-range batch operations, append to next empty row, RAW and USER_ENTERED input modes, and copy-paste with format preservation.</p>
+                <p><strong>Calendar (13 tools):</strong> Event CRUD with Google Meet integration, natural language quick-add, RRULE recurring events, free/busy checking, and an intelligent available-slot finder that respects working hours.</p>
+
                 <h4>Multi-Connection OAuth Architecture</h4>
                 <p>A key architectural decision is the multi-connection OAuth system that supports multiple Google accounts per user, with automatic routing based on tool type. Marketing tools (GA4, GSC, GMC) route to one OAuth connection, while productivity tools (Gmail, Drive, Sheets, Calendar) route to another. This prevents scope conflicts and allows clean separation between business analytics and personal productivity.</p>
                 <p>Credentials are stored with Fernet AES-128 encryption in PostgreSQL, with automatic token refresh and connection-type routing. The system supports marketing, productivity, and custom connection types, with a maximum of 5 connections per user.</p>
@@ -247,6 +252,10 @@
                 <p><strong>Eval Gates and Scorecard:</strong> A three-stage quality gate system (stage1/stage2/production) runs evaluation harness packs before any release. A scorecard CLI aggregates pass/fail metrics across all evaluators. Rollout telemetry dimensions track reliability metrics in production, with an operator runbook documenting triage, rollback, and escalation procedures.</p>
                 <p><strong>Unified Skill Inventory:</strong> Deterministic shared selectors and capability policy enforcement ensure consistent element targeting across skills. A validation chain verifies candidate skills before shadow replay, preventing regression from generated recovery paths.</p>
 
+                <h3>Teach Recording</h3>
+                <p>Users can record browser workflows as structured step sequences&mdash;clicks, inputs, navigations, and file uploads&mdash;and replay them deterministically. The recorder captures events including <code>file_upload</code> actions with stable path placeholders (<code>resume_path</code>, <code>cover_letter_path</code>, <code>portfolio_path</code>), enabling reliable replay of workflows that involve document attachments.</p>
+                <p>Deterministic replay executes recorded steps via the Ralph executor with native <code>browser_file_upload</code> support. Legacy recorded steps using fill/type actions with upload-like selectors are auto-normalized to explicit <code>upload_file</code> steps for backward compatibility. The recorder verification system distinguishes active listeners from stale localStorage flags, and modal state detection surfaces actionable guidance when the browser is blocked by a native file chooser dialog rather than reporting a generic failure.</p>
+
                 <h2>Research Capabilities</h2>
                 <p>Margot offers three tiers of research, each balancing depth, cost, and speed:</p>
                 <div class="table-scroll">
@@ -292,11 +301,32 @@
                 <p><strong>Phase 5 &mdash; Round 2 Cross-Pollination:</strong> Agents receive summaries from the other three agents and conduct additional research to fill gaps, challenge assumptions, and explore connections they missed initially.</p>
                 <p><strong>Phase 6 &mdash; Final Synthesis:</strong> A synthesis agent produces a comprehensive report with consensus points, key insights, areas of disagreement, and a structured final report with full source attribution.</p>
 
-                <h2>Self-Extending Skills</h2>
-                <p>One of Margot&rsquo;s most distinctive capabilities is autonomous tool generation. Through three coordinator tools (create_skill, list_generated_skills, delete_skill), the system can convert natural language descriptions into validated Python tools that are hot-registered into the coordinator&rsquo;s tool set.</p>
+                <h2>Skills Framework</h2>
+                <p>Margot&rsquo;s skills system has two layers: autonomous tool generation (self-extending skills) and a curated skill library with intelligent discovery and routing (Skills V2).</p>
+
+                <h3>Self-Extending Skills</h3>
+                <p>Through three coordinator tools (create_skill, list_generated_skills, delete_skill), the system can convert natural language descriptions into validated Python tools that are hot-registered into the coordinator&rsquo;s tool set.</p>
                 <p><strong>Pipeline:</strong> The SkillGenerator calls the LLM to produce three files: skill.py (the tool implementation), skill_meta.json (function schema in OpenAI format), and test_skill.py (automated tests). The SkillValidator then performs AST-level analysis, checking against an import whitelist, scanning for banned patterns, and verifying the function signature matches the declared schema.</p>
                 <p><strong>Validation:</strong> Generated skills must pass both static analysis (AST validation) and dynamic testing (pytest with a 30-second timeout). Only skills that pass all checks are registered.</p>
                 <p><strong>Hot-Registration:</strong> The SkillExecutor dynamically imports approved skills and the SkillRegistry generates OpenAI function-format tool definitions with a skill_ prefix. New tools are immediately available to the coordinator without restart. A 20-skill cap prevents unbounded growth.</p>
+
+                <h3>Skills V2 &mdash; Discovery and Routing</h3>
+                <p>The curated skill library contains 31 skills discovered from disk, each defined with YAML frontmatter metadata (triggers, domains, URL patterns, requirements, allowed tools). Skills are feature-flagged via <code>enable_skills_v2</code> and support four agent types: Browser, Coordinator, Desktop, and Research. When a task arrives, all skills are scored against the current context and the highest-scoring matches are injected into the agent&rsquo;s prompt.</p>
+                <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr><th>Scoring Signal</th><th>Weight</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Exact trigger match</td><td>100</td><td>Task text matches a declared trigger phrase exactly</td></tr>
+                        <tr><td>Domain match</td><td>80</td><td>Current URL domain matches a skill&rsquo;s declared domains</td></tr>
+                        <tr><td>URL pattern match</td><td>60</td><td>Current URL matches a skill&rsquo;s regex URL patterns</td></tr>
+                        <tr><td>Partial trigger match</td><td>40</td><td>Task text partially overlaps with trigger phrases</td></tr>
+                        <tr><td>Tag match</td><td>20</td><td>Task metadata matches skill tags</td></tr>
+                    </tbody>
+                </table>
+                </div>
+                <p>A token budget system (2,000&ndash;3,000 tokens per injection, max 1,500 per skill) prevents context bloat by truncating at paragraph and sentence boundaries. Re-evaluation triggers fire on domain changes, after 3 consecutive failures, or when a required tool is missing from the allowed tool set.</p>
 
                 <h2>Proactive Monitoring</h2>
                 <p>Margot includes a heartbeat-based watch system that runs scheduled evaluations and delivers alerts via iOS push notifications. The system supports three schedule modes: slot-based (fixed time slots), interval-based (every N minutes), and cron expression scheduling.</p>
@@ -355,7 +385,22 @@
                 <p>OpenRouter automatically caches prompts for Grok 4.1 Fast with a 5-minute TTL. The message structure is optimized for maximum cache hits: a static system prompt, a semi-static memory context in a separate message, and dynamic conversation content. Production measurements show an 85% cache hit rate, reducing prompt processing time by 500&ndash;800ms per request.</p>
 
                 <h3>Context Management</h3>
-                <p>Large tool outputs are automatically summarized using GPT-4o-mini before being fed back into the coordinator context. This achieves 80&ndash;95% token reduction on large payloads (GA4 reports: 90&ndash;95% reduction, web search results: 80&ndash;90%, file contents: 70&ndash;85%) while preserving the information needed for accurate responses. Context pruning runs before each LLM call with a 50,000-token budget.</p>
+                <p>Context management uses two components working together: a ContextWindowManager that enforces a sliding window, and a ToolResultSummarizer that compresses large tool outputs before they enter the context.</p>
+                <p>The sliding window maintains a 50,000-token maximum with a 30-message limit. The system message is always preserved, and when pruning is needed, the oldest non-system messages are removed first to keep the most recent context intact. Token counting uses tiktoken with the cl100k_base encoding. Per-conversation metrics&mdash;token_count, tokens_saved, and context_pruned_count&mdash;are tracked in PostgreSQL for monitoring.</p>
+                <p>The ToolResultSummarizer compresses large tool outputs using GPT-4o-mini at temperature 0.3 before they are fed back into the coordinator context. Each tool type has a specific character threshold that triggers summarization:</p>
+                <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr><th>Tool Category</th><th>Threshold</th><th>Typical Reduction</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>GA4 reports</td><td>5,000 chars</td><td>90&ndash;95%</td></tr>
+                        <tr><td>Web search results</td><td>3,000 chars</td><td>80&ndash;90%</td></tr>
+                        <tr><td>File contents</td><td>10,000 chars</td><td>70&ndash;85%</td></tr>
+                        <tr><td>Google Cloud responses</td><td>5,000 chars</td><td>85&ndash;95%</td></tr>
+                    </tbody>
+                </table>
+                </div>
 
                 <h3>Performance Targets</h3>
                 <div class="table-scroll">
@@ -403,7 +448,7 @@
                 <p><strong>SSE Streaming:</strong> Real-time token-by-token response streaming, matching the desktop experience.</p>
                 <p><strong>Push Notifications:</strong> APNs integration for reminders and watch alerts. Notification taps create contextual conversations with seed messages.</p>
                 <p><strong>Markdown Rendering:</strong> Full markdown support with code syntax highlighting and table rendering.</p>
-                <p><strong>Vega-Lite Charts:</strong> Inline data visualization rendered natively from chart specifications.</p>
+                <p><strong>Vega-Lite Charts:</strong> Inline data visualization that detects Vega-Lite JSON specs (by <code>$schema</code> or data+mark+encoding structure) and renders them natively via WKWebView with Vega/Vega-Embed from CDN. Charts use a dark theme with white labels and green marks, responsive width, and a 300pt default / 400pt max height.</p>
                 <p><strong>Connection Monitoring:</strong> Real-time backend health checks with connecting/connected/disconnected states and throttled retry logic.</p>
                 <p><strong>Media Prefetching:</strong> Background actor for prefetching thumbnails and media assets to reduce perceived latency.</p>
 
@@ -424,6 +469,26 @@
                 </table>
                 </div>
                 <p>The Conversation History Foundation (Slices A&ndash;M) was validated across backend, desktop, and iOS. The desktop UI supports conversation pinning, search, and sidebar navigation, while the iOS app mirrors this functionality with native SwiftUI components and background data synchronization.</p>
+
+                <h3>Advanced Settings</h3>
+                <p>The iOS app exposes agent toggles for Freya (coding), Nano Banana (images), Veo (video), and Browser Control, along with model parameter sliders for temperature (0&ndash;1, step 0.1) and max tokens (1,024&ndash;16,384, step 1,024). A debug mode toggle reveals diagnostic info and enables log export. All settings are persisted via <code>@AppStorage</code> and passed to the API as snake_case fields.</p>
+
+                <h2>Conversation Service</h2>
+                <p>The backend Conversation Service manages the full lifecycle of chat conversations across both desktop and iOS clients. It handles auto-titling, search, pagination, and export, with all operations scoped to the authenticated user.</p>
+                <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr><th>Operation</th><th>Description</th><th>Latency</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Auto-Title Generation</td><td>LLM-generated titles from first 1&ndash;2 messages (50 char max, fallback to truncated message)</td><td>&lt;2 seconds</td></tr>
+                        <tr><td>List Conversations</td><td>Paginated listing with sort by recent/created/pinned and optional pinned-only filter</td><td>&lt;100ms</td></tr>
+                        <tr><td>Full-Text Search</td><td>PostgreSQL GIN-indexed search across titles and message content</td><td>&lt;200ms</td></tr>
+                        <tr><td>Export</td><td>JSON (structured with metadata) or Markdown (human-readable with headers)</td><td>&lt;500ms</td></tr>
+                        <tr><td>Update / Delete</td><td>Title editing, pinning status, or full conversation deletion with cascade</td><td>&lt;50ms</td></tr>
+                    </tbody>
+                </table>
+                </div>
 
                 <h2>Security Architecture</h2>
 
