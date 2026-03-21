@@ -18,6 +18,30 @@
     });
   });
 
+  // Theme toggle (dark/light)
+  var themeToggle = document.querySelector('.theme-toggle');
+  if (themeToggle) {
+    var iconMoon = themeToggle.querySelector('.icon-moon');
+    var iconSun = themeToggle.querySelector('.icon-sun');
+
+    function applyTheme(light) {
+      document.documentElement.classList.toggle('light', light);
+      iconMoon.style.display = light ? 'none' : '';
+      iconSun.style.display = light ? '' : 'none';
+    }
+
+    // Restore saved preference
+    var saved = localStorage.getItem('theme');
+    if (saved === 'light') applyTheme(true);
+
+    themeToggle.addEventListener('click', function () {
+      var isLight = document.documentElement.classList.toggle('light');
+      iconMoon.style.display = isLight ? 'none' : '';
+      iconSun.style.display = isLight ? '' : 'none';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+  }
+
   // Navbar shadow on scroll
   var navbar = document.querySelector('.navbar');
   if (navbar) {

@@ -15,7 +15,7 @@ Executive Summary
 
 Margot is a multi-agent AI desktop assistant that orchestrates over 140 tools across Google Cloud services, GitHub, desktop operations, browser automation, computer use, and specialized knowledge bases. Built with a Tauri 2.0 \+ React frontend and a FastAPI/Python backend, the system is designed around a central coordinator agent that routes tasks to purpose-built tools and specialized subagents, backed by a four-layer cognitive memory architecture. 
 
-This paper documents the system as of February 2026, covering the coordinator agent, memory system, tool ecosystem, specialized subagents, browser automation, research capabilities, self-extending skills, proactive monitoring, performance optimizations, and the iOS companion app. 
+This paper documents the system as of February 2026, covering the coordinator agent, memory system, tool ecosystem, specialized subagents, browser automation, research capabilities, self-extending skills, scheduled automation, performance optimizations, and the iOS companion app. 
 
 Key specifications: Coordinator powered by Grok 4.1 Fast with a 2 million token context window. 68 Google Cloud tools spanning GA4, Search Console, Merchant Center, Gmail, Drive, Sheets, and Calendar. 21 Desktop Commander tools for filesystem and terminal operations. 65 discovered browser skills with deterministic recovery and release gating. Three tiers of research from standard chat to four-agent deep research with cross-pollination. Image generation (Gemini 3 Pro), video generation (Veo 3.1, Sora 2), voice synthesis (ElevenLabs), and RAG-enhanced coding (Freya). A test suite with 1,248 passed tests and zero failures. 
 
@@ -265,21 +265,21 @@ Validation: Generated skills must pass both static analysis (AST validation) and
 Hot-Registration: The SkillExecutor dynamically imports approved skills and the SkillRegistry generates OpenAI function-format tool definitions with a skill\_ prefix. New tools are immediately available to the coordinator without restart. A 20-skill cap prevents unbounded growth. 
 
 Mountain Meadow Systems | Page 11  
-Proactive Monitoring 
+Scheduled Automation 
 
-Margot includes a heartbeat-based watch system that runs scheduled evaluations and delivers alerts via iOS push notifications. The system supports three schedule modes: slot-based (fixed time slots), interval-based (every N minutes), and cron expression scheduling. 
+Margot now uses a scheduled-task system for proactive automation, background execution, and user notifications. Tasks can run once, daily, weekly, monthly, on intervals, or via cron expressions, with resumable execution slices, verification guardrails, and cooperative cancellation. 
 
-Evaluator Types 
+Verification and Recovery 
 
-| Evaluator  | Purpose  | Detection Method |
+| Capability  | Purpose  | Implementation |
 | :---- | ----- | :---- |
-| Uptime Check  | HTTP health monitoring  | Configurable timeout, status codes, redirect following |
-| Content Change  | Website content monitoring  | SHA-256 hash comparison with optional CSS selector targeting |
-| GitHub PR Stale  | Stale pull request detection  | Age threshold via GitHub MCP |
-| GA4 Metrics  | Analytics anomaly detection  | Threshold-based alerts on key metrics |
-| Custom LLM  | Flexible evaluation  | Coordinator-driven analysis of any data source |
+| Run Verification  | Confirm writes and mutations completed correctly  | Readback checks for files and Sheets writes |
+| Cooperative Cancellation  | Stop long-running work safely  | Lease heartbeat plus cancellation flag polling |
+| Runtime Continuations  | Resume long workflows without losing context  | Persisted execution state and slice-based retries |
+| Deterministic Fallbacks  | Recover fragile automations  | Backend fallback paths for workflows like PageSpeed → Sheets |
+| Notifications  | Surface reminders and automation outcomes  | APNs-backed delivery to the iOS app |
 
-Alert lifecycle includes acknowledgment and resolution tracking. When a watch triggers an alert, the iOS app receives an APNs push notification containing a seed message. Tapping the notification creates a new conversation where the coordinator proactively investigates the alert, providing immediate context and recommended actions. 
+Notification delivery remains integrated with the iOS app. Reminders and scheduled workflow outcomes can generate APNs pushes, and notification taps can open directly into contextual conversations. 
 
 Performance and Optimization 
 
@@ -312,7 +312,7 @@ Performance Targets
 
 Test Coverage 
 
-The backend unit test suite contains 1,248 passed tests with 1 skipped and zero failures. Coverage spans the memory system, Google Cloud tools, Gmail, Drive, Sheets, Calendar, PageSpeed, Freya coding agent, browser automation, skill generation, watch evaluators, shell safety, and API endpoints. 
+The backend unit test suite contains 1,248 passed tests with 1 skipped and zero failures. Coverage spans the memory system, Google Cloud tools, Gmail, Drive, Sheets, Calendar, PageSpeed, Freya coding agent, browser automation, skill generation, scheduled-task execution, shell safety, and API endpoints. 
 
 Real-Time Status Indicators 
 
@@ -337,7 +337,7 @@ Core Features
 
 SSE Streaming: Real-time token-by-token response streaming, matching the desktop experience. 
 
-Push Notifications: APNs integration for reminders and watch alerts. Notification taps create contextual conversations with seed messages. 
+Push Notifications: APNs integration for reminders and scheduled workflow outcomes. Notification taps create contextual conversations with seed messages. 
 
 Markdown Rendering: Full markdown support with code syntax highlighting and table rendering. 
 

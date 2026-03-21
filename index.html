@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Margot — a multi-agent AI desktop assistant with 140+ tools, four-layer memory, and a coordinator that actually works. Built by Patrick Kidwell.">
+    <meta name="description" content="Margot — a model-selectable AI assistant for macOS and iOS with 84 Google Cloud tools, scheduled automation, and four-layer memory. Built by Patrick Kidwell.">
     <title>Mountain Meadow Systems</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css?v=4">
+    <link rel="stylesheet" href="styles.css?v=5">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -23,6 +23,7 @@
                 <li><a href="#capabilities">Capabilities</a></li>
                 <li><a href="#architecture">Architecture</a></li>
                 <li><a href="#memory">Memory</a></li>
+                <li><a href="#ios">iOS App</a></li>
                 <li><a href="/documentation">Documentation</a></li>
                 <li><a href="/writing">Writing</a></li>
                 <li class="nav-mobile-only"><a href="https://github.com/pkidwell22" target="_blank" rel="noopener">GitHub</a></li>
@@ -32,6 +33,10 @@
                 <a href="https://github.com/pkidwell22" target="_blank" rel="noopener" class="btn btn-nav">GitHub</a>
                 <a href="/contact" class="btn btn-nav">Contact</a>
             </div>
+            <button class="theme-toggle" aria-label="Toggle light mode">
+                <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            </button>
             <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
         </div>
     </nav>
@@ -53,10 +58,13 @@
                         <span>GitHub</span>
                     </a>
                 </div>
-                <h1>Margot <span class="version">v2.1</span></h1>
-                <p class="tagline">A multi-agent AI desktop assistant with 140+ tools and a memory that persists.</p>
-                <p class="hero-desc">A coordinator agent orchestrates specialized subagents across Google Cloud, research, browser automation, and code generation&mdash;backed by a four-layer cognitive memory system that persists context between conversations.</p>
-                <a href="/demo" class="btn btn-primary">Request a Demo</a>
+                <h1>Margot <span class="version">v3.0</span></h1>
+                <p class="tagline">A model-selectable AI assistant for macOS and iOS with 84 Google Cloud tools, scheduled automation, and memory that persists.</p>
+                <p class="hero-desc">Choose your coordinator from any model on OpenRouter, with ten of the latest models already configured. Orchestrate tasks across Google Cloud, Drive, Gmail, &amp; local files, automate browser tasks, and create scheduled workflows, backed by four-layer cognitive memory and context laundering that keeps every conversation sharp and affordable.</p>
+                <div class="hero-cta-row">
+                    <a href="/demo" class="btn btn-primary">Request a Demo</a>
+                    <a href="/documentation" class="btn btn-secondary">Read the Paper</a>
+                </div>
             </div>
         </div>
     </header>
@@ -94,11 +102,11 @@
 
     <section id="capabilities" class="capabilities">
         <div class="container">
-            <h2>What it does</h2>
+            <h2>Capabilities</h2>
             <div class="bento-grid">
                 <div class="bento-cell wide">
                     <h3>Google Cloud</h3>
-                    <p>68 tools across Analytics 4, Search Console, Merchant Center, Gmail, Drive, Sheets, and Calendar. Multi-account OAuth with automatic routing.</p>
+                    <p>84 tools across Analytics 4, Search Console, Merchant Center, Gmail, Drive, Sheets, Calendar, and PageSpeed Insights. Multi-account OAuth with automatic routing by connection type.</p>
                 </div>
                 <div class="bento-cell">
                     <h3>Research</h3>
@@ -106,19 +114,23 @@
                 </div>
                 <div class="bento-cell">
                     <h3>Desktop &amp; Browser</h3>
-                    <p>21 desktop tools with three-level shell safety. Browser automation via Playwright with 65 discovered skills and deterministic recovery.</p>
+                    <p>21 desktop tools with three-level shell safety. Browser automation via Playwright with 48 skills, deterministic recovery, and release gating.</p>
                 </div>
                 <div class="bento-cell">
                     <h3>Media Generation</h3>
                     <p>Image generation via Gemini 3 Pro (up to 4K), video via Veo 3.1 and Sora 2, voice synthesis via ElevenLabs with streaming.</p>
                 </div>
                 <div class="bento-cell">
-                    <h3>Coding Agent</h3>
-                    <p>Freya runs on MiniMax-M2 with a RAG-enhanced best practices corpus. Auto-linting, auto-commit, 17&times; cheaper than comparable models.</p>
+                    <h3>Scheduled Automation</h3>
+                    <p>Run full coordinator workflows unattended on cron, interval, or slot schedules. Verification contracts, mutation guardrails, and cooperative cancellation for safe background execution.</p>
                 </div>
-                <div class="bento-cell full">
-                    <h3>Skills &amp; Monitoring</h3>
-                    <p>Self-extending tool generation from natural language descriptions (20-skill cap, adjustable in source). Heartbeat-based watch system with cron scheduling, 5 evaluator types, and iOS push notifications. Scheduled task executor runs full coordinator workflows unattended with verification contracts and mutation guardrails.</p>
+                <div class="bento-cell wide">
+                    <h3>Context Laundering</h3>
+                    <p>Large tool payloads are processed before LLM reinjection&mdash;raw, summarized, or truncated based on content type. Integrated across chat, research, and scheduled task runtimes.</p>
+                </div>
+                <div class="bento-cell">
+                    <h3>Generated Skills</h3>
+                    <p>Create new tools from natural language. The skill generator produces Python, validates via AST analysis and automated tests, then hot-registers into the coordinator&rsquo;s tool set&mdash;no restart required.</p>
                 </div>
             </div>
         </div>
@@ -126,8 +138,26 @@
 
     <section id="architecture" class="architecture">
         <div class="container">
-            <h2>How it works</h2>
-            <p class="section-desc">A Grok 4.1 Fast coordinator with a 2M token context window runs a ReAct loop (up to 30 iterations) and delegates to specialized subagents. Each agent has its own model, tools, and system prompt.</p>
+            <h2>Architecture</h2>
+            <p class="section-desc">A model-selectable coordinator runs a ReAct loop (up to 30 iterations) and delegates to specialized subagents. Route through any model on OpenRouter&mdash;with automatic resilience that retries and falls back on pre-first-chunk failures.</p>
+
+            <div class="model-tiers">
+                <div class="model-tier">
+                    <h4>Default Models</h4>
+                    <div class="model-pills">
+                        <span class="model-pill">Grok 4.1 Fast</span>
+                        <span class="model-pill">Claude Sonnet 4.6</span>
+                        <span class="model-pill">Gemini 3.1 Pro</span>
+                        <span class="model-pill">GPT-5.4</span>
+                        <span class="model-pill">GLM-5</span>
+                        <span class="model-pill">MiniMax M2.5</span>
+                        <span class="model-pill">MiniMax M2.7</span>
+                        <span class="model-pill">Kimi K2.5</span>
+                        <span class="model-pill">MiMo V2 Pro</span>
+                        <span class="model-pill">MiMo Omni</span>
+                    </div>
+                </div>
+            </div>
 
             <div class="agent-rows">
                 <div class="agent-row">
@@ -135,12 +165,8 @@
                     <span class="agent-detail">4&times; Grok 4.1 Fast, cross-pollination between rounds, 90&ndash;180s</span>
                 </div>
                 <div class="agent-row">
-                    <span class="agent-name">Freya</span>
-                    <span class="agent-detail">MiniMax-M2 (230B MoE), RAG corpus, auto-lint, ~$0.003/task</span>
-                </div>
-                <div class="agent-row">
                     <span class="agent-name">Browser</span>
-                    <span class="agent-detail">Gemini 3 Flash loops, 65 skills, deterministic recovery</span>
+                    <span class="agent-detail">Gemini 3 Flash loops, 48 skills, deterministic recovery</span>
                 </div>
             </div>
 
@@ -192,21 +218,51 @@
         </div>
     </section>
 
+    <section id="ios" class="ios-app">
+        <div class="container">
+            <h2>iOS App</h2>
+            <p class="section-desc">A native SwiftUI client with the same capabilities as the desktop. Connect securely over Tailscale from anywhere.</p>
+            <div class="ios-features">
+                <div class="ios-feature">
+                    <h4>Skills Library</h4>
+                    <p>Browse and manage all 48 skills from your phone.</p>
+                </div>
+                <div class="ios-feature">
+                    <h4>Scheduled Tasks</h4>
+                    <p>Create, monitor, and review automation runs on the go.</p>
+                </div>
+                <div class="ios-feature">
+                    <h4>Tool Traces</h4>
+                    <p>Inspect every tool call with inline reasoning and full execution traces.</p>
+                </div>
+                <div class="ios-feature">
+                    <h4>Model Selection</h4>
+                    <p>Pick your coordinator model and tune settings per conversation.</p>
+                </div>
+                <div class="ios-feature">
+                    <h4>Internet Provider</h4>
+                    <p>Switch between Brave and Firecrawl search providers per chat.</p>
+                </div>
+                <div class="ios-feature">
+                    <h4>Push Notifications</h4>
+                    <p>APNs-backed alerts for scheduled task outcomes and reminders.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="get-margot" class="get-access">
         <div class="container">
             <div class="cta-inner">
                 <h2>Get Margot</h2>
-                <p class="cta-desc">Free and open-source. Bring your own API keys.</p>
+                <p class="cta-desc">See what Margot can do for your workflow.</p>
                 <div class="cost-pills">
                     <span class="cost-pill">~$0.001/query standard</span>
                     <span class="cost-pill">~$0.01 light research</span>
                     <span class="cost-pill">~$0.016 deep research</span>
                 </div>
-                <a href="https://github.com/pkidwell22" target="_blank" rel="noopener" class="btn btn-primary btn-gh">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    View on GitHub
-                </a>
-                <p class="sys-req">macOS 13+ &middot; iOS 17+ companion</p>
+                <a href="/demo" class="btn btn-primary">Request a Demo</a>
+                <p class="sys-req">macOS 13+ &middot; iOS 17+</p>
             </div>
         </div>
     </section>
@@ -218,7 +274,6 @@
                     <div class="footer-brand">
                         <span>Mountain Meadow Systems</span>
                     </div>
-                    <p class="footer-byline">Built by Patrick Kidwell</p>
                 </div>
                 <div class="footer-contact">
                     <a href="mailto:patrick@mountainmeadowsystems.com" class="footer-link">patrick@mountainmeadowsystems.com</a>
@@ -233,7 +288,7 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=2"></script>
     <script>document.querySelector('.nav-toggle').addEventListener('click',function(){document.querySelector('.navbar').classList.toggle('open')});</script>
 </body>
 </html>
