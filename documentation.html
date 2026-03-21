@@ -42,9 +42,9 @@
 
             <header class="paper-header">
                 <h1>MARGOT</h1>
-                <p class="paper-subtitle">Multi-Agent AI Desktop Assistant</p>
+                <p class="paper-subtitle">Multi-Agent AI Assistant for macOS and iOS</p>
                 <div class="paper-meta">
-                    <span>Technical White Paper v2.1</span>
+                    <span>Technical White Paper v3.0</span>
                     <span>March 2026</span>
                 </div>
                 <div class="paper-author">
@@ -56,9 +56,9 @@
             <article class="paper-content">
 
                 <h2>Executive Summary</h2>
-                <p>Margot is a multi-agent AI desktop assistant that orchestrates over 140 tools across Google Cloud services, GitHub, desktop operations, browser automation, computer use, and specialized knowledge bases. Built with a Tauri 2.0 + React frontend and a FastAPI/Python backend, the system is designed around a central coordinator agent that routes tasks to purpose-built tools and specialized subagents, backed by a four-layer cognitive memory architecture.</p>
-                <p>This paper documents the system as of February 2026, covering the coordinator agent, memory system, tool ecosystem, specialized subagents, browser automation, research capabilities, self-extending skills, proactive monitoring, performance optimizations, and the iOS companion app.</p>
-                <p>Key specifications: Coordinator powered by Grok 4.1 Fast with a 2 million token context window. 68 Google Cloud tools spanning GA4, Search Console, Merchant Center, Gmail, Drive, Sheets, and Calendar. 21 Desktop Commander tools for filesystem and terminal operations. 65 discovered browser skills with deterministic recovery and release gating. Three tiers of research from standard chat to four-agent deep research with cross-pollination. Image generation (Gemini 3 Pro), video generation (Veo 3.1, Sora 2), voice synthesis (ElevenLabs), and RAG-enhanced coding (Freya). A test suite with 1,248 passed tests and zero failures.</p>
+                <p>Margot is a multi-agent AI assistant for macOS and iOS that orchestrates tools across Google Cloud services, GitHub, desktop operations, browser automation, and specialized knowledge bases. Built with a Tauri 2.0 + React frontend, a native SwiftUI iOS client, and a FastAPI/Python backend, the system is designed around a model-selectable coordinator agent that routes tasks to purpose-built tools and specialized subagents, backed by a four-layer cognitive memory architecture and a context laundering system that keeps conversations sharp and affordable.</p>
+                <p>This paper documents the system as of March 2026, covering the model-selectable coordinator, context laundering, memory system, tool ecosystem, specialized subagents, browser automation, research capabilities, self-extending skills, scheduled task automation, performance optimizations, and the iOS app.</p>
+                <p>Key specifications: Model-selectable coordinator routed through any model on OpenRouter, with 10 preconfigured models including Grok 4.1 Fast, Claude Sonnet 4.6, and Gemini 3.1 Pro. 84 Google Cloud tools spanning GA4, Search Console, Merchant Center, Gmail, Drive, Sheets, Calendar, and PageSpeed Insights. 21 Desktop Commander tools for filesystem and terminal operations. 48 browser skills with deterministic recovery and release gating. Three tiers of research from standard chat to four-agent deep research with cross-pollination. Context laundering that processes tool payloads before LLM reinjection. Image generation (Gemini 3 Pro), video generation (Veo 3.1, Sora 2), and voice synthesis (ElevenLabs). Scheduled task automation with verification contracts and mutation guardrails. A test suite with 1,248 passed tests and zero failures.</p>
 
                 <h2>Technology Stack</h2>
                 <div class="table-scroll">
@@ -70,17 +70,16 @@
                         <tr><td>Frontend</td><td>Tauri 2.0 + React/TypeScript</td><td>Cross-platform desktop shell with native performance</td></tr>
                         <tr><td>Backend</td><td>FastAPI (Python 3.12)</td><td>Async API server with SSE streaming</td></tr>
                         <tr><td>Database</td><td>PostgreSQL 18 + pgvector 0.8.1</td><td>Relational storage with vector similarity search</td></tr>
-                        <tr><td>Coordinator LLM</td><td>Grok 4.1 Fast (xAI via OpenRouter)</td><td>Primary orchestrator with 2M token context</td></tr>
+                        <tr><td>Coordinator LLM</td><td>Model-selectable via OpenRouter (default: Grok 4.1 Fast)</td><td>Primary orchestrator with 10 preconfigured models</td></tr>
                         <tr><td>Browser Agent</td><td>Gemini 3 Flash (loop) / Grok 4.1 Fast (orchestration)</td><td>Autonomous browser actions</td></tr>
-                        <tr><td>Fast LLM</td><td>GPT-4o-mini</td><td>Tool result summarization</td></tr>
-                        <tr><td>Coding LLM</td><td>MiniMax-M2 (230B MoE)</td><td>RAG-enhanced code generation (Freya)</td></tr>
+                        <tr><td>Context Laundering</td><td>GPT-4o-mini</td><td>Tool payload compression before LLM reinjection</td></tr>
                         <tr><td>Embeddings</td><td>OpenAI text-embedding-3-small</td><td>1536-dimension vectors for memory search</td></tr>
                         <tr><td>Image Generation</td><td>Gemini 3 Pro Image (Nano Banana Pro)</td><td>Text-to-image, editing, and blending</td></tr>
                         <tr><td>Video Generation</td><td>Veo 3.1 (Google AI Studio)</td><td>Text-to-video, image-to-video, frame interpolation</td></tr>
                         <tr><td>Video Generation</td><td>Sora 2 (OpenAI)</td><td>Text-to-video and image-to-video</td></tr>
                         <tr><td>Voice Synthesis</td><td>ElevenLabs (eleven_turbo_v2_5)</td><td>Text-to-speech with streaming</td></tr>
                         <tr><td>Browser</td><td>Playwright + CDP (Chrome port 9222)</td><td>Automated web interaction</td></tr>
-                        <tr><td>iOS App</td><td>SwiftUI + SSE + APNs</td><td>Native companion with push notifications</td></tr>
+                        <tr><td>iOS App</td><td>SwiftUI + SSE + APNs</td><td>Native client with push notifications</td></tr>
                         <tr><td>Networking</td><td>Tailscale (WireGuard mesh)</td><td>Secure remote access for iOS</td></tr>
                     </tbody>
                 </table>
@@ -89,24 +88,45 @@
                 <h2>The Coordinator Agent</h2>
                 <p>The coordinator is the central intelligence of the system. Every user query passes through it, and it decides whether to answer directly, invoke tools, delegate to subagents, or execute multi-step workflows through its ReAct (Reason + Act) loop.</p>
 
-                <h3>Model and Configuration</h3>
+                <h3>Model Selection and Configuration</h3>
+                <p>The coordinator is model-selectable, routing through any model available on OpenRouter. Ten models are preconfigured across certified and fallback tiers, and users can switch coordinators per conversation from both the desktop and iOS clients.</p>
+                <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr><th>Model</th><th>Provider</th><th>Tier</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Grok 4.1 Fast</td><td>xAI</td><td>Certified (default)</td></tr>
+                        <tr><td>Claude Sonnet 4.6</td><td>Anthropic</td><td>Certified</td></tr>
+                        <tr><td>Gemini 3.1 Pro</td><td>Google</td><td>Certified</td></tr>
+                        <tr><td>GPT-5.4</td><td>OpenAI</td><td>Fallback</td></tr>
+                        <tr><td>GLM-5</td><td>Z-AI</td><td>Fallback</td></tr>
+                        <tr><td>MiniMax M2.5</td><td>MiniMax</td><td>Fallback</td></tr>
+                        <tr><td>MiniMax M2.7</td><td>MiniMax</td><td>Fallback</td></tr>
+                        <tr><td>Kimi K2.5</td><td>Moonshot AI</td><td>Fallback</td></tr>
+                        <tr><td>MiMo V2 Pro</td><td>Xiaomi</td><td>Fallback</td></tr>
+                        <tr><td>MiMo Omni</td><td>Xiaomi</td><td>Fallback</td></tr>
+                    </tbody>
+                </table>
+                </div>
                 <div class="table-scroll">
                 <table>
                     <thead>
                         <tr><th>Parameter</th><th>Value</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td>Model</td><td>x-ai/grok-4.1-fast via OpenRouter</td></tr>
-                        <tr><td>Context Window</td><td>2,000,000 tokens</td></tr>
-                        <tr><td>Max Output Tokens</td><td>4,096</td></tr>
-                        <tr><td>Temperature</td><td>0.3 (optimized for tool calling)</td></tr>
                         <tr><td>Max ReAct Iterations</td><td>30</td></tr>
                         <tr><td>Prompt Caching</td><td>Enabled (5-minute TTL, 85% hit rate)</td></tr>
                         <tr><td>Tool Calling Accuracy</td><td>&gt;95%</td></tr>
                     </tbody>
                 </table>
                 </div>
-                <p>The 2 million token context window is 12x larger than the previous coordinator model, effectively eliminating conversation length as a constraint. Combined with prompt caching that achieves 85% hit rates in production, typical follow-up queries process in under 2 seconds.</p>
+
+                <h3>Coordinator Resilience</h3>
+                <p>Interactive chat includes automatic resilience for model failures. Pre-first-real-chunk failure classification detects whether a failure is transient or structural. Transient failures trigger one retry with the selected model. If the retry fails, or if the failure is classified as a model/provider issue, the coordinator automatically falls back to the default certified model (Grok 4.1 Fast). Scheduled tasks do not participate in user-selected coordinator routing and remain pinned to the default certified coordinator path.</p>
+
+                <h3>Internet Provider Selection</h3>
+                <p>Each chat session supports a scoped internet provider picker, allowing users to switch between Brave Search (lower-cost web_search) and Firecrawl (search/fetch parity with web_fetch and research runtime support). The selection persists per conversation and is available on both desktop and iOS clients.</p>
 
                 <h3>4-Tier Tool Selection Strategy (LOBSTER-01)</h3>
                 <p>Rather than relying on brittle keyword routing, the coordinator uses an LLM-native decision framework organized into four prioritized tiers:</p>
@@ -149,12 +169,12 @@
                 <p>Before each coordinator invocation, the Memory Manager assembles context from all four layers: the last 20 messages from short-term memory, the top 5 semantically relevant facts, the top 3 related episodic summaries, and the top 2 applicable procedural workflows. This assembly targets sub-150ms latency using HNSW vector indexes with configurable similarity thresholds (0.7 for semantic, 0.6 for episodic, 0.5 for procedural).</p>
 
                 <h3>Memory Extraction Pipeline</h3>
-                <p>After each conversation, an asynchronous background task extracts new memories using the MemoryExtractor, which is powered by the same Grok 4.1 Fast model as the coordinator. The extractor performs three operations: semantic memory extraction (identifying facts, preferences, context, and entities), episodic summary generation (condensing conversations with importance scoring), and procedural workflow detection (identifying repeatable patterns from tool usage sequences). Deduplication is handled via similarity thresholds: memories with &gt;0.95 cosine similarity to existing entries update the existing memory rather than creating duplicates.</p>
+                <p>After each conversation, an asynchronous background task extracts new memories using the MemoryExtractor, which is powered by the coordinator model. The extractor performs three operations: semantic memory extraction (identifying facts, preferences, context, and entities), episodic summary generation (condensing conversations with importance scoring), and procedural workflow detection (identifying repeatable patterns from tool usage sequences). Deduplication is handled via similarity thresholds: memories with &gt;0.95 cosine similarity to existing entries update the existing memory rather than creating duplicates.</p>
 
                 <h2>Integrated Tool Ecosystem</h2>
-                <p>Margot integrates over 140 tools organized into several service categories. All tool interactions are managed through the Model Context Protocol (MCP) pattern, providing consistent invocation, error handling, and result formatting.</p>
+                <p>Margot integrates tools organized into several service categories. All tool interactions are managed through the Model Context Protocol (MCP) pattern, providing consistent invocation, error handling, and result formatting.</p>
 
-                <h3>Google Cloud Services (68 Tools)</h3>
+                <h3>Google Cloud Services (84 Tools)</h3>
                 <p>The Google Cloud integration provides the largest single tool surface, spanning analytics, search performance, merchant data, email, file storage, spreadsheets, calendar management, and website performance auditing.</p>
                 <div class="table-scroll">
                 <table>
@@ -206,14 +226,9 @@
                 <h2>Specialized Subagents</h2>
                 <p>Margot delegates specialized tasks to purpose-built subagents. Each subagent uses a model optimized for its domain and operates with its own tool set and system prompt.</p>
 
-                <h3>Freya &mdash; Coding Subagent</h3>
-                <p><strong>Model:</strong> MiniMax-M2 (230B parameters, 10B active via MoE, 128K context)</p>
-                <p>Freya is a RAG-enhanced coding agent for code generation, refactoring, debugging, and test writing. It operates with its own ReAct loop and has access to Desktop Commander tools for reading, writing, and executing code. A best practices database (PostgreSQL with pgvector) provides relevant patterns and examples via hybrid search, and the agent includes auto-linting on file writes and auto-commit capabilities.</p>
-                <p>Freya is user-selected (not auto-delegated by the coordinator), providing a clean UX where users explicitly choose the coding mode. At approximately $0.003 per task versus $0.05 for comparable models, it delivers strong coding performance at 17x lower cost.</p>
-
                 <h3>Nano Banana Pro &mdash; Image Generation</h3>
                 <p><strong>Model:</strong> Gemini 3 Pro Image (via Google AI Studio)</p>
-                <p>Three operations: text-to-image generation (up to 4K resolution, 1&ndash;4 images per request, up to 14 reference images for style guidance), image editing (natural language modifications to existing images), and image blending (merging 2&ndash;14 images). Features include text rendering in images, Google Search grounding for real-time data, and professional camera controls. Like Freya, Nano Banana is user-toggled and bypasses the coordinator entirely for direct model routing.</p>
+                <p>Three operations: text-to-image generation (up to 4K resolution, 1&ndash;4 images per request, up to 14 reference images for style guidance), image editing (natural language modifications to existing images), and image blending (merging 2&ndash;14 images). Features include text rendering in images, Google Search grounding for real-time data, and professional camera controls. Nano Banana is user-toggled and bypasses the coordinator entirely for direct model routing.</p>
 
                 <h3>Sora 2 &mdash; Video Generation</h3>
                 <p><strong>Model:</strong> OpenAI Sora 2 / Sora 2 Pro</p>
@@ -245,7 +260,7 @@
                 <p>The browser agent uses the Ralph Loop pattern for iterative web interaction through a Chrome instance with CDP enabled on port 9222. The architecture consists of three layers:</p>
                 <p><strong>RalphLoop:</strong> The core iteration loop that takes a screenshot/snapshot, sends it to the LLM for action selection, executes the action, and verifies the result. Each loop has configurable max iterations (default 15) and a 5-minute timeout. The loop includes modal-only snapshot filtering (reducing 60K+ characters to 5&ndash;10K of relevant content), deterministic click paths for known UI patterns, element blacklisting after repeated failures, and automatic form autofill from user configuration.</p>
                 <p><strong>BrowserOrchestrator:</strong> Manages sequences of Ralph Loops for complex multi-step workflows. For example, a LinkedIn job application is decomposed into three sequential loops: find_job, apply, and return_to_list. The orchestrator tracks completion rates and supports configurable failure modes (FAIL_FAST, SKIP_CYCLE, CONTINUE).</p>
-                <p><strong>Skills Framework V2:</strong> 65 discovered skills (33 browser-specific) provide site-specific knowledge including CSS selectors, workflow sequences, and known gotchas. Skills are selected via weighted scoring across five dimensions: exact trigger match (100 points), domain match (80 points), URL pattern match (60 points), partial trigger match (40 points), and tag match (20 points). A token budget system prevents context bloat from over-injection.</p>
+                <p><strong>Skills Framework V2:</strong> 48 skills provide site-specific knowledge including CSS selectors, workflow sequences, and known gotchas. Skills are selected via weighted scoring across five dimensions: exact trigger match (100 points), domain match (80 points), URL pattern match (60 points), partial trigger match (40 points), and tag match (20 points). A token budget system prevents context bloat from over-injection.</p>
 
                 <h4>Browser Autonomy Hardening</h4>
                 <p>A 12-ticket hardening sprint (LOBSTER2) added contract-driven reliability and release gating to the browser automation system:</p>
@@ -329,25 +344,25 @@
                 </div>
                 <p>A token budget system (2,000&ndash;3,000 tokens per injection, max 1,500 per skill) prevents context bloat by truncating at paragraph and sentence boundaries. Re-evaluation triggers fire on domain changes, after 3 consecutive failures, or when a required tool is missing from the allowed tool set.</p>
 
-                <h2>Proactive Monitoring</h2>
-                <p>Margot includes a heartbeat-based watch system that runs scheduled evaluations and delivers alerts via iOS push notifications. The system supports three schedule modes: slot-based (fixed time slots), interval-based (every N minutes), and cron expression scheduling.</p>
+                <h2>Context Laundering</h2>
+                <p>Large tool payloads are processed by the context laundering service before being appended back into the coordinator&rsquo;s LLM context as tool results. This prevents context bloat while preserving the information the coordinator needs to reason about tool outputs.</p>
 
-                <h3>Evaluator Types</h3>
+                <h3>Laundering Modes</h3>
                 <div class="table-scroll">
                 <table>
                     <thead>
-                        <tr><th>Evaluator</th><th>Purpose</th><th>Detection Method</th></tr>
+                        <tr><th>Mode</th><th>Behavior</th><th>When Used</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td>Uptime Check</td><td>HTTP health monitoring</td><td>Configurable timeout, status codes, redirect following</td></tr>
-                        <tr><td>Content Change</td><td>Website content monitoring</td><td>SHA-256 hash comparison with optional CSS selector targeting</td></tr>
-                        <tr><td>GitHub PR Stale</td><td>Stale pull request detection</td><td>Age threshold via GitHub MCP</td></tr>
-                        <tr><td>GA4 Metrics</td><td>Analytics anomaly detection</td><td>Threshold-based alerts on key metrics</td></tr>
-                        <tr><td>Custom LLM</td><td>Flexible evaluation</td><td>Coordinator-driven analysis of any data source</td></tr>
+                        <tr><td>Raw</td><td>Payload passed through unmodified</td><td>Small tool outputs below threshold</td></tr>
+                        <tr><td>Summary</td><td>Compressed by a fast helper model (GPT-4o-mini)</td><td>Large tool outputs exceeding character thresholds</td></tr>
+                        <tr><td>Truncated</td><td>Payload cut to size with truncation marker</td><td>Extremely large outputs or fallback when summary fails</td></tr>
+                        <tr><td>Already Processed</td><td>Skipped (marked by upstream)</td><td>Deep Research V2 worker outputs with source-aware compression</td></tr>
                     </tbody>
                 </table>
                 </div>
-                <p>Alert lifecycle includes acknowledgment and resolution tracking. When a watch triggers an alert, the iOS app receives an APNs push notification containing a seed message. Tapping the notification creates a new conversation where the coordinator proactively investigates the alert, providing immediate context and recommended actions.</p>
+                <p>Context laundering is integrated across all runtimes: streaming chat, non-streaming chat, the scheduled task executor, legacy deep research, and Deep Research V2. Deep Research V2 uses its own worker-side structured compression upstream and marks those results as already processed so the shared launderer does not summarize them again.</p>
+                <p>Each tool type has a specific character threshold that triggers laundering. Typical reductions are 80&ndash;95% for GA4 reports and Google Cloud responses, 80&ndash;90% for web search results, and 70&ndash;85% for file contents. An admin endpoint (<code>GET /api/admin/launderer-stats</code>) provides visibility into laundering metrics.</p>
 
                 <h2>Scheduled Task Execution</h2>
                 <p>Beyond monitoring, Margot can execute full coordinator workflows on a schedule. The TaskExecutor runs arbitrary multi-tool workflows&mdash;such as monthly PageSpeed audits written to Google Sheets&mdash;using the same ReAct loop and tool set available in interactive chat, with additional safety guarantees designed for unattended operation.</p>
@@ -383,25 +398,11 @@
                 <p>Independent tools execute concurrently via asyncio.gather() with dependency detection to prevent conflicts. This achieves 30&ndash;70% faster execution for multi-tool queries, depending on whether all tools can run in parallel or some require sequential execution.</p>
 
                 <h3>Prompt Caching</h3>
-                <p>OpenRouter automatically caches prompts for Grok 4.1 Fast with a 5-minute TTL. The message structure is optimized for maximum cache hits: a static system prompt, a semi-static memory context in a separate message, and dynamic conversation content. Production measurements show an 85% cache hit rate, reducing prompt processing time by 500&ndash;800ms per request.</p>
+                <p>OpenRouter automatically caches prompts with a 5-minute TTL for supported models. The message structure is optimized for maximum cache hits: a static system prompt, a semi-static memory context in a separate message, and dynamic conversation content. Production measurements show an 85% cache hit rate, reducing prompt processing time by 500&ndash;800ms per request.</p>
 
                 <h3>Context Management</h3>
-                <p>Context management uses two components working together: a ContextWindowManager that enforces a sliding window, and a ToolResultSummarizer that compresses large tool outputs before they enter the context.</p>
+                <p>Context management uses two components working together: a ContextWindowManager that enforces a sliding window, and the context laundering service that compresses large tool outputs before they enter the context (see Context Laundering section).</p>
                 <p>The sliding window maintains a 50,000-token maximum with a 30-message limit. The system message is always preserved, and when pruning is needed, the oldest non-system messages are removed first to keep the most recent context intact. Token counting uses tiktoken with the cl100k_base encoding. Per-conversation metrics&mdash;token_count, tokens_saved, and context_pruned_count&mdash;are tracked in PostgreSQL for monitoring.</p>
-                <p>The ToolResultSummarizer compresses large tool outputs using GPT-4o-mini at temperature 0.3 before they are fed back into the coordinator context. Each tool type has a specific character threshold that triggers summarization:</p>
-                <div class="table-scroll">
-                <table>
-                    <thead>
-                        <tr><th>Tool Category</th><th>Threshold</th><th>Typical Reduction</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>GA4 reports</td><td>5,000 chars</td><td>90&ndash;95%</td></tr>
-                        <tr><td>Web search results</td><td>3,000 chars</td><td>80&ndash;90%</td></tr>
-                        <tr><td>File contents</td><td>10,000 chars</td><td>70&ndash;85%</td></tr>
-                        <tr><td>Google Cloud responses</td><td>5,000 chars</td><td>85&ndash;95%</td></tr>
-                    </tbody>
-                </table>
-                </div>
 
                 <h3>Performance Targets</h3>
                 <div class="table-scroll">
@@ -422,7 +423,7 @@
                 </div>
 
                 <h2>Test Coverage</h2>
-                <p>The backend unit test suite contains 1,248 passed tests with 1 skipped and zero failures. Coverage spans the memory system, Google Cloud tools, Gmail, Drive, Sheets, Calendar, PageSpeed, Freya coding agent, browser automation, skill generation, watch evaluators, shell safety, and API endpoints.</p>
+                <p>The backend unit test suite contains 1,248 passed tests with 1 skipped and zero failures. Coverage spans the memory system, Google Cloud tools, Gmail, Drive, Sheets, Calendar, PageSpeed, browser automation, skill generation, context laundering, scheduled task execution, shell safety, and API endpoints.</p>
 
                 <h2>Real-Time Status Indicators</h2>
                 <p>During the ReAct loop, the system emits lightweight SSE status events that replace generic loading messages with specific progress updates. Five status types map to different stages of query processing:</p>
@@ -440,10 +441,10 @@
                     </tbody>
                 </table>
                 </div>
-                <p>A mapping of 65+ internal tool names to human-friendly display names (e.g., gcloud_run_ga4_report becomes Analytics Report) provides clear visibility into which tools are active. Each status event is under 100 bytes with less than 5ms overhead, transmitted over the existing SSE connection with no additional infrastructure.</p>
+                <p>A mapping of internal tool names to human-friendly display names (e.g., gcloud_run_ga4_report becomes Analytics Report) provides clear visibility into which tools are active. Each status event is under 100 bytes with less than 5ms overhead, transmitted over the existing SSE connection with no additional infrastructure.</p>
 
-                <h2>iOS Companion App</h2>
-                <p>The iOS app provides a native SwiftUI interface for interacting with Margot remotely, connected through Tailscale for secure WireGuard-based mesh networking.</p>
+                <h2>iOS App</h2>
+                <p>The iOS app is a full-featured native SwiftUI client with the same capabilities as the desktop, connected through Tailscale for secure WireGuard-based mesh networking.</p>
 
                 <h3>Core Features</h3>
                 <p><strong>SSE Streaming:</strong> Real-time token-by-token response streaming, matching the desktop experience.</p>
@@ -472,7 +473,7 @@
                 <p>The Conversation History Foundation (Slices A&ndash;M) was validated across backend, desktop, and iOS. The desktop UI supports conversation pinning, search, and sidebar navigation, while the iOS app mirrors this functionality with native SwiftUI components and background data synchronization.</p>
 
                 <h3>Advanced Settings</h3>
-                <p>The iOS app exposes agent toggles for Freya (coding), Nano Banana (images), Veo (video), and Browser Control, along with model parameter sliders for temperature (0&ndash;1, step 0.1) and max tokens (1,024&ndash;16,384, step 1,024). A debug mode toggle reveals diagnostic info and enables log export. All settings are persisted via <code>@AppStorage</code> and passed to the API as snake_case fields.</p>
+                <p>The iOS app exposes coordinator model selection (persisted via <code>selectedCoordinatorModel</code>), internet provider picker (Brave or Firecrawl, defaulting to Brave), agent toggles for Nano Banana (images), Veo (video), and Browser Control, along with reasoning mode and media mode toggles. A Skills Library view allows browsing and managing all 48 skills. The Scheduled Tasks view provides creation, monitoring, and review of automation runs. A tool trace feed surfaces inline reasoning and full execution traces for every tool call. All settings are persisted via <code>@AppStorage</code> and passed to the API as snake_case fields.</p>
 
                 <h2>Conversation Service</h2>
                 <p>The backend Conversation Service manages the full lifecycle of chat conversations across both desktop and iOS clients. It handles auto-titling, search, pagination, and export, with all operations scoped to the authenticated user.</p>
@@ -503,17 +504,17 @@
                 <p>When Margot sends emails via Gmail, a dedicated Email Formatter service converts markdown content to professionally styled HTML with proper rendering across email clients. Features include Apple-style font stacks, responsive tables with alternating row colors and hover states, dark-themed code blocks, blue-accented blockquotes, and smart metric highlighting where positive percentages appear in green and negative percentages in red. A plain text fallback is generated automatically for clients that do not support HTML.</p>
 
                 <h2>Database Architecture</h2>
-                <p>PostgreSQL 18 with pgvector 0.8.1 provides the persistence layer. Core tables include conversations and messages (with auto-updating triggers for metadata), semantic_memories, episodic_memories, and procedural_memories (all with HNSW vector indexes), google_cloud_connections (encrypted OAuth tokens), coding_practices (RAG knowledge base for Freya), and memory_operations (audit log). Performance is optimized through HNSW indexes (m=16, ef_construction=64), composite indexes on user_id + timestamp, GIN indexes for full-text search, and JSONB for flexible metadata.</p>
+                <p>PostgreSQL 18 with pgvector 0.8.1 provides the persistence layer. Core tables include conversations and messages (with auto-updating triggers for metadata), semantic_memories, episodic_memories, and procedural_memories (all with HNSW vector indexes), google_cloud_connections (encrypted OAuth tokens), scheduled_tasks, and memory_operations (audit log). Performance is optimized through HNSW indexes (m=16, ef_construction=64), composite indexes on user_id + timestamp, GIN indexes for full-text search, and JSONB for flexible metadata.</p>
 
                 <h2>Architecture Principles</h2>
-                <p><strong>LLM-driven routing over hardcoded rules.</strong> Keyword-based tool routing creates brittle systems. Letting models like Grok 4.1 Fast make intelligent tool selection decisions based on full context produces more reliable and adaptable behavior.</p>
+                <p><strong>LLM-driven routing over hardcoded rules.</strong> Keyword-based tool routing creates brittle systems. Letting models make intelligent tool selection decisions based on full context produces more reliable and adaptable behavior. The model-selectable coordinator takes this further by allowing users to choose the best model for their workflow.</p>
                 <p><strong>Server-side calculations for data accuracy.</strong> LLMs are unreliable at arithmetic. All financial calculations, metric aggregations, and data transformations happen in Python before reaching the model, eliminating entire categories of errors.</p>
                 <p><strong>Structural enforcement over prompt engineering.</strong> Validation gates, typed schemas, and AST analysis provide guarantees that no amount of prompt refinement can match. The self-extending skills pipeline exemplifies this: generated code must pass static analysis and automated tests before registration.</p>
                 <p><strong>Memory as a first-class system component.</strong> The four-layer memory architecture transforms Margot from a stateless assistant into one that accumulates knowledge, recognizes patterns, and improves with use. The 26% accuracy improvement over baseline validates the investment in purpose-built memory infrastructure.</p>
                 <p>Margot represents a practical demonstration that multi-agent AI systems can be built for production use today, with careful attention to reliability, performance, and user experience.</p>
 
                 <div class="paper-footer-meta">
-                    <p>Margot AI System | Version 2.1.0 | March 2026</p>
+                    <p>Margot AI System | Version 3.0.0 | March 2026</p>
                     <p>Mountain Meadow Systems | mountainmeadowsystems.com</p>
                 </div>
 
@@ -528,7 +529,6 @@
                     <div class="footer-brand">
                         <span>Mountain Meadow Systems</span>
                     </div>
-                    <p class="footer-byline">Built by Patrick Kidwell</p>
                 </div>
                 <div class="footer-contact">
                     <a href="mailto:patrick@mountainmeadowsystems.com" class="footer-link">patrick@mountainmeadowsystems.com</a>
